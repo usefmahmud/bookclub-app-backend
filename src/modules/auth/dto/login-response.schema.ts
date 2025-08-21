@@ -27,6 +27,9 @@ export class LoginResponseSchema {
         example: Role.USER,
         description: 'User role',
       },
+      accessToken: {
+        type: 'string',
+      },
     },
   })
   user: {
@@ -34,5 +37,6 @@ export class LoginResponseSchema {
     email: string;
     fullName: string;
     role: string;
+    accessToken: string;
   };
 }

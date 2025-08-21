@@ -75,11 +75,6 @@ export class AuthService {
           fullName: user.fullName,
           email: user.email,
           role: user.role,
-          accesToken: this.jwtService.getToken({
-            email: user.email,
-            id: user.id,
-            role: user.role,
-          }),
         },
       };
     } catch {

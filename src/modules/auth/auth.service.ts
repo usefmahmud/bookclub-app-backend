@@ -1,14 +1,14 @@
 import { Model } from 'mongoose';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../database/schemas/user.schema';
+import { User } from '../../database/schemas/user.schema';
 import { LoginDto } from './dto/login.dto';
 import { HashingService } from 'src/common/services/hashing.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly hashingService: HashingService,
   ) {}
 

@@ -22,9 +22,7 @@ export class AuthController {
   }
 
   @Post('/register')
-  register(@Body() registrationDto: RegistrationDto) {
-    return {
-      message: 'Registration successful',
-    };
+  async register(@Body() registrationDto: RegistrationDto) {
+    return await this.authService.register(registrationDto);
   }
 }

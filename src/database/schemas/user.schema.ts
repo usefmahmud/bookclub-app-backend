@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Role } from 'src/common/enums/role.enum';
 
 export type UserDocument = User & Document;
 
@@ -62,10 +63,10 @@ export class User {
 
   @Prop({
     type: String,
-    enum: ['user', 'admin'],
+    enum: Role,
     default: 'user',
   })
-  role: string;
+  role: Role;
 
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;

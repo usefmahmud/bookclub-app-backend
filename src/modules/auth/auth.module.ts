@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User, UserSchema } from '../../database/schemas/user.schema';
-import { HashingService } from 'src/common/services/hashing.service';
+import { HashingService } from '../../common/services/hashing.service';
 
 @Module({
   imports: [

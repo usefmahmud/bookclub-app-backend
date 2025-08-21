@@ -3,7 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../../database/schemas/user.schema';
 import { LoginDto } from './dto/login.dto';
-import { HashingService } from 'src/common/services/hashing.service';
+import { HashingService } from '../../common/services/hashing.service';
 
 @Injectable()
 export class AuthService {

@@ -93,3 +93,19 @@ erDiagram
     ROOMS ||--o{ MEMBERSHIPS : "has_members"
     USERS ||--o{ BOOKS : "creates"
 ```
+
+## Development Flow
+- [x] Setup Project
+- [ ] Authentication
+    - [x] Login
+    - [x] Register
+    - [x] Auth Guard
+    - [x] Logout
+    - [ ] Refresh Token
+    - [x] Get Current User
+    - [ ] Update User Info
+- [ ] User Profile
+    - [ ] Upload Avatar
+- [ ] Rooms System
+
+- ...

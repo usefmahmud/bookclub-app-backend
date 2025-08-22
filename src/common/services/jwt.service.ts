@@ -13,7 +13,13 @@ export class JwtService extends BaseJwtService {
   @Inject(ConfigService)
   private readonly configService: ConfigService;
 
-  getToken(payload: TokenPayload): string {
+  getToken(
+    payload: TokenPayload,
+    type: 'access' | 'refresh' = 'access',
+  ): string {
+    if (type === 'refresh') {
+      return this.sign(payload, this.getTokenOptions('refresh'));
+    }
     return this.sign(payload, this.getTokenOptions());
   }
 
@@ -30,6 +36,13 @@ export class JwtService extends BaseJwtService {
       return {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
         expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
+      };
+    }
+
+    if(type === 'refresh') {
+      return {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
       };
     }
   }

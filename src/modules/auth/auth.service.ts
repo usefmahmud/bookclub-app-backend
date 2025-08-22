@@ -5,8 +5,9 @@ import { User } from '../../database/schemas/user.schema';
 import { LoginDto } from './dto/login.dto';
 import { HashingService } from '../../common/services/hashing.service';
 import { RegistrationDto } from './dto/registration.dto';
-import { JwtService } from '../../common/services/jwt.service';
+import { JwtService, TokenPayload } from '../../common/services/jwt.service';
 import { CurrentUserDto, mapToCurrentUser } from './dto/current-user.dto';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto, res: Response) {
     const user = await this.userModel.findOne({
       email: loginDto.email,
     });
@@ -34,11 +35,16 @@ export class AuthService {
       throw new BadRequestException('Invalid email or password');
     }
 
-    const accessToken = this.jwtService.getToken({
-      email: user.email,
+    const tokenPayload: TokenPayload = {
       id: user.id,
+      email: user.email,
       role: user.role,
-    });
+    };
+
+    const accessToken = this.jwtService.getToken(tokenPayload);
+    const refreshToken = this.jwtService.getToken(tokenPayload, 'refresh');
+
+    this.setRefreshTokenCookie(refreshToken, res)
 
     return {
       user: {
@@ -83,6 +89,15 @@ export class AuthService {
     }
   }
 
+  async logout(res: Response) {
+    try {
+      res.clearCookie('refreshToken');
+      return { message: 'Logout successful' };
+    } catch {
+      throw new BadRequestException('Logout failed');
+    }
+  }
+
   async getCurrentUser(userId: string): Promise<CurrentUserDto> {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -90,5 +105,15 @@ export class AuthService {
     }
     console.log(user.toJSON());
     return mapToCurrentUser(user);
+  }
+
+  private async setRefreshTokenCookie(refreshToken: string, res: Response) {
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/',
+    });
   }
 }

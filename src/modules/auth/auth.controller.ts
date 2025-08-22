@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post, Res } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { RegistrationDto } from './dto/registration.dto';
 import { AuthService } from './auth.service';
@@ -8,6 +8,7 @@ import { Public } from '../../common/decorators';
 import { GetCurrentUserId } from 'src/common/decorators/current-user.decorator';
 import { CurrentUserDto } from './dto/current-user.dto';
 import { Response } from 'express';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -53,5 +54,13 @@ export class AuthController {
     @GetCurrentUserId() userId: string,
   ): Promise<CurrentUserDto> {
     return await this.authService.getCurrentUser(userId);
+  }
+
+  @Patch('/me')
+  async updateProfile(
+    @GetCurrentUserId() userId: string,
+    @Body() UpdateProfileDto: UpdateProfileDto,
+  ) {
+    return await this.authService.updateProfile(userId, UpdateProfileDto);
   }
 }

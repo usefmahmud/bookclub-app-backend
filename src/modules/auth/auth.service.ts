@@ -8,6 +8,7 @@ import { RegistrationDto } from './dto/registration.dto';
 import { JwtService, TokenPayload } from '../../common/services/jwt.service';
 import { CurrentUserDto, mapToCurrentUser } from './dto/current-user.dto';
 import { Response } from 'express';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +45,7 @@ export class AuthService {
     const accessToken = this.jwtService.getToken(tokenPayload);
     const refreshToken = this.jwtService.getToken(tokenPayload, 'refresh');
 
-    this.setRefreshTokenCookie(refreshToken, res)
+    this.setRefreshTokenCookie(refreshToken, res);
 
     return {
       user: {
@@ -105,6 +106,25 @@ export class AuthService {
     }
     console.log(user.toJSON());
     return mapToCurrentUser(user);
+  }
+
+  async updateProfile(userId: string, UpdateProfileDto: UpdateProfileDto) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    try {
+      user.set(UpdateProfileDto);
+      await user.save();
+
+      return {
+        message: 'User updated successfully',
+      };
+    } catch {
+      throw new BadRequestException('User update failed');
+    }
   }
 
   private async setRefreshTokenCookie(refreshToken: string, res: Response) {

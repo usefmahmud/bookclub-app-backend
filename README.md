@@ -93,3 +93,69 @@ erDiagram
     ROOMS ||--o{ MEMBERSHIPS : "has_members"
     USERS ||--o{ BOOKS : "creates"
 ```
+
+## API Documentation
+
+### Authentication Endpoints
+
+The application provides a complete authentication system with JWT tokens and refresh token support.
+
+#### POST /auth/register
+Register a new user account.
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe", 
+  "email": "john@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+#### POST /auth/login
+Authenticate user and receive access token. Refresh token is set as httpOnly cookie.
+```json
+{
+  "email": "john@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+#### POST /auth/refresh-token
+Refresh access token using httpOnly cookie. No body required.
+
+#### GET /auth/me
+Get current user information (requires authentication).
+**Headers:** `Authorization: Bearer <access_token>`
+
+#### PUT /auth/me
+Update user profile (requires authentication).
+**Headers:** `Authorization: Bearer <access_token>`
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "johndoe",
+  "bio": "Book lover and software developer",
+  "avatar": "https://example.com/avatar.jpg",
+  "dateOfBirth": "1990-01-01",
+  "gender": "male"
+}
+```
+
+### Security Features
+
+- **JWT Authentication**: Secure token-based authentication
+- **Refresh Tokens**: Automatic token refresh with httpOnly cookies
+- **Password Hashing**: Bcrypt encryption for user passwords
+- **Input Validation**: Comprehensive validation for all endpoints
+- **Role-Based Authorization**: User roles (user, admin) for access control
+
+### Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env` and configure your environment variables
+4. Start the development server: `npm run start:dev`
+5. Access API documentation at `http://localhost:3080/api`
+
+The server will start on port 3080 by default. Swagger documentation is available at `/api` endpoint.

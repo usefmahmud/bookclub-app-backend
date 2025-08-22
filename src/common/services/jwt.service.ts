@@ -25,11 +25,34 @@ export class JwtService extends BaseJwtService {
     }
   }
 
+  getRefreshToken(payload: TokenPayload): string {
+    return this.sign(payload, this.getTokenOptions('refresh'));
+  }
+
+  verifyRefreshToken(token: string) {
+    try {
+      return this.verify(token, this.getTokenOptions('refresh'));
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
   getTokenOptions(type: 'access' | 'refresh' = 'access') {
     if (type === 'access') {
       return {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
+        secret:
+          this.configService.get<string>('JWT_ACCESS_SECRET') ||
+          'default-access-secret',
+        expiresIn:
+          this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '15m',
+      };
+    } else if (type === 'refresh') {
+      return {
+        secret:
+          this.configService.get<string>('JWT_REFRESH_SECRET') ||
+          'default-refresh-secret',
+        expiresIn:
+          this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '7d',
       };
     }
   }

@@ -1,15 +1,29 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable cookie parser for httpOnly cookies
+  app.use(cookieParser());
+
+  // Enable global validation pipes
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Bookclub API')
     .setDescription('The Bookclub application API documentation')
     .setVersion('1.0')
     .addTag('bookclub')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

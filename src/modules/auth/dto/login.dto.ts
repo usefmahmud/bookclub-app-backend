@@ -16,7 +16,8 @@ export class LoginDto {
   @ApiProperty({
     example: 'Abcd@1234',
     minLength: 8,
-    pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+    pattern:
+      '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
     description:
       'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character',
     required: true,
@@ -24,4 +25,3 @@ export class LoginDto {
   @IsString()
   password: string;
 }
-

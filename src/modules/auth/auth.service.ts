@@ -33,11 +33,14 @@ export class AuthService {
       throw new BadRequestException('Invalid email or password');
     }
 
-    const accessToken = this.jwtService.getToken({
+    const tokenPayload = {
       email: user.email,
       id: user.id,
       role: user.role,
-    });
+    };
+
+    const accessToken = this.jwtService.getToken(tokenPayload);
+    const refreshToken = this.jwtService.getRefreshToken(tokenPayload);
 
     return {
       user: {
@@ -47,6 +50,7 @@ export class AuthService {
         role: user.role,
         accessToken,
       },
+      refreshToken,
     };
   }
 
@@ -80,5 +84,83 @@ export class AuthService {
     } catch {
       throw new BadRequestException('User registration failed');
     }
+  }
+
+  async refreshToken(refreshToken: string) {
+    const payload = this.jwtService.verifyRefreshToken(refreshToken);
+
+    const user = await this.userModel.findById(payload.id);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const tokenPayload = {
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
+
+    const newAccessToken = this.jwtService.getToken(tokenPayload);
+    const newRefreshToken = this.jwtService.getRefreshToken(tokenPayload);
+
+    return {
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        accessToken: newAccessToken,
+      },
+      refreshToken: newRefreshToken,
+    };
+  }
+
+  async getCurrentUser(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      username: user.username,
+      bio: user.bio,
+      avatar: user.avatar,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
+      age: user.age,
+    };
+  }
+
+  async updateCurrentUser(userId: string, updateData: any) {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true },
+    );
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      username: user.username,
+      bio: user.bio,
+      avatar: user.avatar,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
+      age: user.age,
+    };
   }
 }

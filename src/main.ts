@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -39,5 +39,13 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT ?? 3080);
+  return app;
 }
-bootstrap();
+
+// For Vercel deployment
+export default bootstrap;
+
+// For local development
+if (require.main === module) {
+  bootstrap();
+}

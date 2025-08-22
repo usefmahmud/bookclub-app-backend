@@ -6,6 +6,7 @@ import { LoginDto } from './dto/login.dto';
 import { HashingService } from '../../common/services/hashing.service';
 import { RegistrationDto } from './dto/registration.dto';
 import { JwtService } from '../../common/services/jwt.service';
+import { CurrentUserDto, mapToCurrentUser } from './dto/current-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -80,5 +81,14 @@ export class AuthService {
     } catch {
       throw new BadRequestException('User registration failed');
     }
+  }
+
+  async getCurrentUser(userId: string): Promise<CurrentUserDto> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    console.log(user.toJSON());
+    return mapToCurrentUser(user);
   }
 }

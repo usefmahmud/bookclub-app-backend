@@ -2,7 +2,7 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService as BaseJwtService } from '@nestjs/jwt';
 
-interface TokenPayload {
+export interface TokenPayload {
   id: string;
   email: string;
   role: string;

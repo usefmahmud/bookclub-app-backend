@@ -1,16 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { RegistrationDto } from './dto/registration.dto';
 import { AuthService } from './auth.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginResponseSchema } from './dto/login-response.schema';
 import { Public } from '../../common/decorators';
+import { GetCurrentUserId } from 'src/common/decorators/current-user.decorator';
+import { CurrentUserDto } from './dto/current-user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -37,7 +33,15 @@ export class AuthController {
   }
 
   @Get('/me')
-  async getCurrentUser() {
-    return 'it is me!';
+  @ApiResponse({
+    status: 200,
+    description: 'Login success',
+    type: CurrentUserDto,
+  })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async getCurrentUser(
+    @GetCurrentUserId() userId: string,
+  ): Promise<CurrentUserDto> {
+    return await this.authService.getCurrentUser(userId);
   }
 }

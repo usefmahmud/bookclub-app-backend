@@ -38,7 +38,6 @@ async function bootstrap() {
     customSiteTitle: 'Bookclub API Documentation',
   });
 
-  await app.listen(process.env.PORT ?? 3080);
   return app;
 }
 
@@ -47,5 +46,7 @@ export default bootstrap;
 
 // For local development
 if (require.main === module) {
-  bootstrap();
+  bootstrap().then(app => {
+    app.listen(process.env.PORT ?? 3080);
+  });
 }

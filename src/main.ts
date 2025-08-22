@@ -9,7 +9,6 @@ async function bootstrap() {
     .setTitle('Bookclub API')
     .setDescription('The Bookclub application API documentation')
     .setVersion('1.0')
-    .addTag('bookclub')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .addCookieAuth('authentication')
     .addSecurityRequirements('bearer')

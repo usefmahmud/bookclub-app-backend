@@ -103,7 +103,7 @@ erDiagram
     - [x] Logout
     - [ ] Refresh Token
     - [x] Get Current User
-    - [ ] Update User Info
+    - [x] Update User Info
 - [ ] User Profile
     - [ ] Upload Avatar
 - [ ] Rooms System

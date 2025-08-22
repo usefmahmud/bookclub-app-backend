@@ -29,6 +29,67 @@ The platform utilizes a modern full-stack architecture optimized for real-time c
 
 **Hosting**: Deployed on Vercel for optimal performance and automatic scaling, with Supabase managing database and storage services.
 
-## Database Schema
+## ER Diagram
 
-Will put here soon...
+```mermaid
+---
+config:
+  layout: elk
+---
+erDiagram
+    USERS {
+        int id PK
+        string full_name
+        string email
+        string password_hash
+        enum role "admin|user"
+        datetime created_at
+    }
+    ROOMS {
+        int id PK
+        string title
+        text description
+        int owner_id FK
+        int book_id FK
+        int max_capacity
+        bool is_private
+        datetime created_at
+    }
+    BOOKS {
+        int id PK
+        string title
+        string author
+        text description
+        int created_by_user_id FK
+        datetime created_at
+    }
+    SESSIONS {
+        int id PK
+        int room_id FK
+        int book_id FK
+        string chapter_or_section
+        datetime scheduled_start
+        datetime scheduled_end
+        string timezone
+        bool is_recurring
+        datetime created_at
+    }
+    VOICE_CALLS {
+        int id PK
+    }
+    MEMBERSHIPS {
+        int id PK
+        int room_id FK
+        int user_id FK
+        datetime joined_at
+        bool muted
+    }
+    USERS ||--o{ ROOMS : "owns"
+    ROOMS ||--|| BOOKS : "has_book" 
+    BOOKS ||--o{ SESSIONS : "has_sessions"
+    ROOMS ||--o{ SESSIONS : "schedules"
+    SESSIONS ||--o| VOICE_CALLS : "may_have"
+    USERS ||--o{ MEMBERSHIPS : "member_of"
+    ROOMS ||--o{ MEMBERSHIPS : "has_members"
+    USERS ||--o{ BOOKS : "creates"
+```

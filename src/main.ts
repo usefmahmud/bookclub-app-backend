@@ -13,7 +13,16 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const swaggerCDN = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.11.0';
+
+  SwaggerModule.setup('api', app, document, {
+    customCssUrl: [`${swaggerCDN}/swagger-ui.css`],
+    customJs: [
+      `${swaggerCDN}/swagger-ui-bundle.js`,
+      `${swaggerCDN}/swagger-ui-standalone-preset.js`,
+    ],
+    customSiteTitle: 'Bookclub API Documentation',
+  });
 
   await app.listen(process.env.PORT ?? 3080);
 }

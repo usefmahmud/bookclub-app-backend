@@ -96,14 +96,19 @@ erDiagram
 
 ## Development Flow
 - [x] Setup Project
-- [ ] Authentication
+- [x] Authentication
     - [x] Login
     - [x] Register
     - [x] Auth Guard
     - [x] Logout
-    - [ ] Refresh Token
+    - [x] Refresh Token
     - [x] Get Current User
     - [x] Update User Info
+    - [x] Set Unique Username
+- [ ] Authentication Enhancement
+    - [ ] Forget Password
+    - [ ] Change Email
+    - [ ] Reset Password
 - [ ] User Profile
     - [ ] Upload Avatar
 - [ ] Rooms System

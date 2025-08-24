@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginResponseSchema } from './dto/login-response.schema';
 import { Public } from '../../common/decorators';
-import { GetCurrentUserId } from 'src/common/decorators/current-user.decorator';
+import { GetCurrentUserId } from '../../common/decorators/current-user.decorator';
 import { CurrentUserDto } from './dto/current-user.dto';
 import { Request, Response } from 'express';
 import { UpdateProfileDto } from './dto/update-profile.dto';

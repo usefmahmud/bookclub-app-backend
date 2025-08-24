@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { JwtService } from './common/services/jwt.service';
+import { RoomsModule } from './modules/rooms/rooms.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JwtService } from './common/services/jwt.service';
     }),
     DatabaseModule,
     AuthModule,
+    RoomsModule,
   ],
   controllers: [],
   providers: [

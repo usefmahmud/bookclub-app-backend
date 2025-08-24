@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post, Put, Res } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { RegistrationDto } from './dto/registration.dto';
 import { AuthService } from './auth.service';
@@ -62,5 +62,13 @@ export class AuthController {
     @Body() UpdateProfileDto: UpdateProfileDto,
   ) {
     return await this.authService.updateProfile(userId, UpdateProfileDto);
+  }
+
+  @Put('/username')
+  async updateUsername(
+    @GetCurrentUserId() userId: string,
+    @Body('username') username: string,
+  ) {
+    return await this.authService.updateUsername(userId, username);
   }
 }

@@ -127,6 +127,31 @@ export class AuthService {
     }
   }
 
+  async updateUsername(userId: string, username: string) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const existingUser = await this.userModel.findOne({ username });
+
+    if (existingUser) {
+      throw new BadRequestException('Username already exists');
+    }
+
+    try {
+      user.username = username;
+      await user.save();
+
+      return {
+        message: 'Username updated successfully',
+      };
+    } catch {
+      throw new BadRequestException('Username update failed');
+    }
+  }
+
   private async setRefreshTokenCookie(refreshToken: string, res: Response) {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,

@@ -13,21 +13,27 @@ export class JwtService extends BaseJwtService {
   @Inject(ConfigService)
   private readonly configService: ConfigService;
 
-  getToken(
-    payload: TokenPayload,
-    type: 'access' | 'refresh' = 'access',
-  ): string {
-    if (type === 'refresh') {
-      return this.sign(payload, this.getTokenOptions('refresh'));
-    }
-    return this.sign(payload, this.getTokenOptions());
+  getToken(payload: TokenPayload): string {
+    return this.sign(payload, this.getTokenOptions('access'));
   }
 
-  verifyToken(token: string) {
+  getRefreshToken(payload: TokenPayload): string {
+    return this.sign(payload, this.getTokenOptions('refresh'));
+  }
+
+  verifyToken(token: string): TokenPayload {
     try {
-      return this.verify(token, this.getTokenOptions());
+      return this.verify(token, this.getTokenOptions('access'));
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  verifyRefreshToken(token: string): TokenPayload {
+    try {
+      return this.verify(token, this.getTokenOptions('refresh'));
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
     }
   }
 
@@ -39,7 +45,7 @@ export class JwtService extends BaseJwtService {
       };
     }
 
-    if(type === 'refresh') {
+    if (type === 'refresh') {
       return {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
         expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),

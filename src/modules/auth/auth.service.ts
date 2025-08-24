@@ -43,7 +43,7 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.getToken(tokenPayload);
-    const refreshToken = this.jwtService.getToken(tokenPayload, 'refresh');
+    const refreshToken = this.jwtService.getRefreshToken(tokenPayload);
 
     this.setRefreshTokenCookie(refreshToken, res);
 
@@ -107,8 +107,7 @@ export class AuthService {
     }
 
     try {
-      const tokenPayload = this.jwtService.verifyToken(refreshToken);
-
+      const tokenPayload = this.jwtService.verifyRefreshToken(refreshToken);
       const user = await this.userModel.findById(tokenPayload.id);
 
       if (!user) {
@@ -117,7 +116,11 @@ export class AuthService {
       }
 
       this.setRefreshTokenCookie(
-        this.jwtService.getToken(tokenPayload, 'refresh'),
+        this.jwtService.getRefreshToken({
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        }),
         res,
       );
 
@@ -146,7 +149,6 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    console.log(user.toJSON());
     return mapToCurrentUser(user);
   }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Patch, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post, Put, Req, Res } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { RegistrationDto } from './dto/registration.dto';
 import { AuthService } from './auth.service';
@@ -7,7 +7,7 @@ import { LoginResponseSchema } from './dto/login-response.schema';
 import { Public } from '../../common/decorators';
 import { GetCurrentUserId } from 'src/common/decorators/current-user.decorator';
 import { CurrentUserDto } from './dto/current-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('Auth')
@@ -41,6 +41,15 @@ export class AuthController {
   @Post('/logout')
   async logout(@Res({ passthrough: true }) res: Response) {
     return await this.authService.logout(res);
+  }
+
+  @Public()
+  @Post('/refresh-token')
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.authService.refreshToken(req, res);
   }
 
   @Get('/me')

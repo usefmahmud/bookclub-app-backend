@@ -7,7 +7,7 @@ import { HashingService } from '../../common/services/hashing.service';
 import { RegistrationDto } from './dto/registration.dto';
 import { JwtService, TokenPayload } from '../../common/services/jwt.service';
 import { CurrentUserDto, mapToCurrentUser } from './dto/current-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
@@ -96,6 +96,48 @@ export class AuthService {
       return { message: 'Logout successful' };
     } catch {
       throw new BadRequestException('Logout failed');
+    }
+  }
+
+  async refreshToken(req: Request, res: Response) {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      throw new BadRequestException('Refresh token not found');
+    }
+
+    try {
+      const tokenPayload = this.jwtService.verifyToken(refreshToken);
+
+      const user = await this.userModel.findById(tokenPayload.id);
+
+      if (!user) {
+        await this.logout(res);
+        throw new BadRequestException('User not found');
+      }
+
+      this.setRefreshTokenCookie(
+        this.jwtService.getToken(tokenPayload, 'refresh'),
+        res,
+      );
+
+      const accessToken = this.jwtService.getToken({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      });
+
+      return {
+        user: {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          accessToken,
+        },
+      };
+    } catch {
+      throw new BadRequestException('Refresh token invalid');
     }
   }
 
